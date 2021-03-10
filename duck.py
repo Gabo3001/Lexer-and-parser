@@ -8,7 +8,6 @@ tokens = [
     'PROGRAM',      #program
     'ID',           #id
     'SEMICOLON',     #;
-    'DOT',          #.
     'COMMA',        #,
     'COLON',        #:
     'INT',          #cte int
@@ -33,7 +32,6 @@ tokens = [
 ]
 #Definicion de variables para los tokens
 t_SEMICOLON = r'\;'
-t_DOT = r'\.'
 t_COMMA = r'\,'
 t_COLON = r'\:'
 t_L_CURPAR = r'\{'
@@ -49,7 +47,7 @@ t_MINUS = r'\-'
 t_MULT = r'\*'
 t_DIV = r'\/'
 
-t_ignore = r' \t'
+t_ignore = ' \t'
 
 def t_PROGRAM(t):
     r'program'
@@ -82,7 +80,7 @@ def t_ID(t):
     return t
 
 def t_FLOAT(t):
-    r'\d+.\d+'
+    r'\d+\.\d+'
     t.value = float(t.value)
     return t
 
@@ -111,3 +109,139 @@ def pruebaLex():
         if not tok:
             break
         print(tok)
+#__________PARSER____________
+
+def p_program(p):
+    '''
+    program  : PROGRAM ID SEMICOLON programT
+    
+    programT : vars programF
+             | programF
+    
+    programF : bloque empty
+    '''
+    p[0] = None
+
+def p_vars(p):
+    '''
+    vars  : VAR varsT
+    
+    varsT : ID COMMA varsT
+          | ID COLON tipo SEMICOLON varsF
+    
+    varsF : varsT
+          | empty
+    '''
+    p[0] = None
+
+def p_tipo(p):
+    '''
+    tipo  : INT empty
+          | FLOAT empty
+    '''
+    p[0] = None
+
+def p_bloque(p):
+    '''
+    bloque  : L_CURPAR bloqueT
+    bloqueT : estatuto bloqueT
+            | R_CURPAR  empty
+    '''
+    p[0] = None
+
+def p_estatuto(p):
+    '''
+    estatuto  : asignacion empty
+              | condicion empty
+              | escritura empty
+    '''
+    p[0] = None
+
+def p_asignacion(p):
+    '''
+    asignacion  : ID EQ expresion SEMICOLON empty
+    '''
+    p[0] = None
+    
+def p_escritura(p):
+    '''
+    escritura  : PRINT L_PAR escrituraT
+    escrituraT : expresion escrituraF
+               | STRING escrituraF
+    escrituraF : COMMA  escrituraT
+               | R_PAR SEMICOLON empty
+    '''
+    p[0] = None
+
+def p_expresion(p):
+    '''
+    expresion  : exp expresionT
+    expresionT : LESS exp empty
+               | GREATER exp empty
+               | DIF exp empty
+               | empty
+    '''
+    p[0] = None
+
+def p_condicion(p):
+    '''
+    condicion  : IF L_PAR expresion R_PAR bloque condicionT
+    condicionT : ELSE bloque empty
+               | empty
+    '''
+    p[0] = None
+
+def p_exp(p):
+    '''
+    exp  : termino expT
+    expT : PLUS exp
+         | MINUS exp
+         | empty
+    '''
+    p[0] = None
+
+def p_termino(p):
+    '''
+    termino  : factor terminoT
+    terminoT : MULT termino
+         | DIV termino
+         | empty
+    '''
+    p[0] = None
+
+def p_factor(p):
+    '''
+    factor  : L_PAR expresion R_PAR empty
+            | factorT
+    factorT : PLUS factorF
+            | MINUS factorF
+            | factorF
+    factorF : varcte empty
+    '''
+    p[0] = None
+
+def p_varcte(p):
+    '''
+    varcte  : ID empty
+            | INT empty
+            | FLOAT empty
+    '''
+    p[0] = None
+
+def p_error(p):
+    print("Syntax error found")
+
+def p_empty(p):
+    '''
+    empty : 
+    '''
+    p[0] = None
+
+parser = yacc.yacc()
+
+while True:
+    try:
+        s = input('>> ')
+    except EOFError:
+        break
+    parser.parse(s)
