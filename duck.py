@@ -28,7 +28,7 @@ tokens = [
     'PLUS',         #+
     'MINUS',        #-
     'MULT',         #*
-    'DIV',          #/
+    'DIV'          #/
 ]
 #Definicion de variables para los tokens
 t_SEMICOLON = r'\;'
