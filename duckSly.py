@@ -52,27 +52,25 @@ class CalcLexer(Lexer):
     VAR = r'[a-z][a-zA-Z_0-9]*'
     ID = r'[A-Z][a-zA-Z0-9]*'
     STRING = r'"[a-zA-Z0-9!@#$%^&*()]*"'
-
+    #Funcion para el token FLOAT
     @_(r'\d+\.\d+')
     def FLOAT(self, t):
         t.value = float(t.value)
         return t
-
+    #Funcion para el token INT
     @_(r'\d+')
     def INT(self, t):
         t.value = int(t.value)
         return t
-
+    #Funcion contadora de lineas
     @_(r'\n+')
     def ignore_newline(self, t):
         self.lineno += t.value.count('\n')
-
+    #Funcion para manejar errores
     def t_error(self, t):
         print('Line: %d: Not valid character: %r' % (self.lineno, t.value[0]))
         self.index += 1
-    
-    def getLineno(self):
-        return self.lineno
+
 #Funcion para probar el escaner lexico
 """if __name__ == '__main__':
     data = '''
@@ -82,7 +80,7 @@ if else print + - * / gabo_125 Gabo 123 12.356
     lexer = CalcLexer()
     for tok in lexer.tokenize(data):
         print(tok)"""
-
+#_______________PARSER________________
 class CalcParser(Parser):
     lexer = CalcLexer()
     tokens = lexer.tokens
@@ -90,7 +88,7 @@ class CalcParser(Parser):
 
     def __init__(self):
         self.names = { }
-
+    #Definición de gramatica
     @_('PROGRAM ID SEMICOLON programT')
     def program(self, p):
         self.index += 1
@@ -220,7 +218,7 @@ class CalcParser(Parser):
     @_(' ')
     def empty(self, p):
         return p
-
+    #Función para manejar errores
     def error(self, p):
         if p:
             print("Syntax error at line: %d, index: %d" % (self.index, p.index))

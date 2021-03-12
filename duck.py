@@ -48,7 +48,7 @@ t_MULT = r'\*'
 t_DIV = r'\/'
 
 t_ignore = ' \t'
-
+#Definicion de tokens
 def t_PROGRAM(t):
     r'program'
     t.type = 'PROGRAM'
@@ -93,7 +93,7 @@ def t_STRING(t):
     r'"[a-zA-Z0-9!@#$%^&*()]*"'
     t.type = 'STRING'
     return t
-
+#Funcion para contar lineas
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
@@ -105,16 +105,16 @@ def t_error(t):
 lexer = lex.lex()
 
 #Funcion para probar el escaner lexico 
-def pruebaLex():
+"""def pruebaLex():
     lexer.input("if else print + - * / gabo_125 Gabo")
 
     while True:
         tok = lexer.token()
         if not tok:
             break
-        print(tok)
+        print(tok)"""
 #__________PARSER____________
-
+#Definicion de gramatica
 def p_program(p):
     '''
     program  : PROGRAM ID SEMICOLON programT
@@ -231,7 +231,7 @@ def p_varcte(p):
             | FLOAT empty
     '''
     p[0] = None
-
+#Funcion de manejo de errores
 def p_error(p):
     print("Syntax error found at line %d." % (lexer.lineno))
 
