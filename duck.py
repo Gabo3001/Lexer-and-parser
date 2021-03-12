@@ -93,9 +93,13 @@ def t_STRING(t):
     r'"[a-zA-Z0-9!@#$%^&*()]*"'
     t.type = 'STRING'
     return t
+
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
 #Variable para manejar errores de 0 coincidencias 
 def t_error(t):
-    print('Not valid character: %s' % t.value[0])
+    print('Line: %d, Not valid character: %r' % (t.lexer.lineno, t.value[0]))
     t.lexer.skip(1)
 
 lexer = lex.lex()
@@ -229,7 +233,7 @@ def p_varcte(p):
     p[0] = None
 
 def p_error(p):
-    print("Syntax error found")
+    print("Syntax error found at line %d." % (lexer.lineno))
 
 def p_empty(p):
     '''
@@ -239,9 +243,11 @@ def p_empty(p):
 
 parser = yacc.yacc()
 
-while True:
-    try:
-        s = input('>> ')
-    except EOFError:
-        break
-    parser.parse(s)
+try:
+    f = open("pruebas.txt", "r")
+    for s in f:
+        parser.parse(s)
+    #parser.parse(f.read())
+except EOFError:
+    print('Error')
+    #parser.parse(s)
