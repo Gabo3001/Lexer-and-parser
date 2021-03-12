@@ -222,6 +222,7 @@ class CalcParser(Parser):
     def error(self, p):
         if p:
             print("Syntax error at line: %d, index: %d" % (self.index, p.index))
+            self.index += 1
             self.tokens
         else:
             print("Syntax error at EOF")
