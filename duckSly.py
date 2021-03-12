@@ -70,6 +70,9 @@ class CalcLexer(Lexer):
     def t_error(self, t):
         print('Line: %d: Not valid character: %r' % (self.lineno, t.value[0]))
         self.index += 1
+    
+    def getLineno(self):
+        return self.lineno
 #Funcion para probar el escaner lexico
 """if __name__ == '__main__':
     data = '''
@@ -81,14 +84,16 @@ if else print + - * / gabo_125 Gabo 123 12.356
         print(tok)"""
 
 class CalcParser(Parser):
-    tokens = CalcLexer.tokens
+    lexer = CalcLexer()
+    tokens = lexer.tokens
+    index = 1
 
     def __init__(self):
         self.names = { }
 
     @_('PROGRAM ID SEMICOLON programT')
     def program(self, p):
-        return p
+        self.index += 1
 
     @_('vars programF',
        'programF')
@@ -216,13 +221,21 @@ class CalcParser(Parser):
     def empty(self, p):
         return p
 
+    def error(self, p):
+        if p:
+            print("Syntax error at line: %d, index: %d" % (self.index, p.index))
+            self.tokens
+        else:
+            print("Syntax error at EOF")
+
 if __name__ == '__main__':
     lexer = CalcLexer()
     parser = CalcParser()
-    while True:
-        try:
-            text = input('calc > ')
-        except EOFError:
-            break
-        if text:
-            parser.parse(lexer.tokenize(text))
+try:
+    f = open("pruebas.txt", "r")
+    for s in f:
+        parser.parse(lexer.tokenize(s))
+    
+except EOFError:
+    print('Error')
+            
