@@ -1,0 +1,12 @@
+program Test; { }
+program Test; {B = 2 > 3;}
+program Test; {B = 2;}
+program Test; { print("asdf"); }
+program Test; { print("asdf", "jklp"); }
+program Test; { print("asdf", Str); }
+program Test: { print(Str, Str2); }
+program Test; { print(Str, Str2); }
+program Test; { if (Stm) {Var = 12.56;}}
+program Test; { if (Stm) {Var = 12.56;} else {Var = 123;}}
+program Test; var0 A : 123.25; { }
+program Test; var0 A, B : 123.25; { }
